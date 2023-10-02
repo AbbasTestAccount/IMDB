@@ -3,6 +3,7 @@ package ir.academy.hamrah.imdb.ui.features.mainScreen
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,12 +42,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import ir.academy.hamrah.imdb.R
 import ir.academy.hamrah.imdb.ui.theme.LitePurple
 import ir.academy.hamrah.imdb.ui.theme.Purple
@@ -62,8 +68,12 @@ fun MainScreen() {
 
     val input = remember { mutableStateOf("") }
 
-
     val scrollState = rememberScrollState()
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val cardWidth = screenWidth / 3 - 30
+
     Box(contentAlignment = Alignment.TopStart, modifier = Modifier.padding(horizontal = 15.dp)) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,14 +90,28 @@ fun MainScreen() {
 
             FlowRow(
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.padding(top = 80.dp)
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .fillMaxWidth(),
+                maxItemsInEachRow = 3
             ) {
 
                 for (i in 0..10) {
-                    Card(
-                        modifier = Modifier.size(180.dp),
-                        border = BorderStroke(2.dp, Color.Green)
-                    ) {
+                    Column() {
+                        Card(
+                            modifier = Modifier
+                                .width(cardWidth.dp)
+                                .height((cardWidth * 1.8).dp)
+                                .padding(top = 20.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .clickable { }
+                        ) {
+                            Image(painter = painterResource(id = R.drawable.test), contentDescription = "movie poster", contentScale = ContentScale.Crop)
+                        }
+                        Row(modifier = Modifier.align(Alignment.End)) {
+                            Text(text = "title")
+                            Spacer(modifier = Modifier.width(5.dp))
+                        }
 
                     }
                 }
@@ -100,10 +124,12 @@ fun MainScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp),
+                .height(60.dp)
+                .background(color = Color.White),
             horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+
 
             IconButton(
                 onClick = {},
@@ -111,6 +137,7 @@ fun MainScreen() {
                     .size(TOP_ROW_HEIGHT.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(LitePurple)
+
             ) {
                 Icon(
                     modifier = Modifier
@@ -138,7 +165,7 @@ fun MainScreen() {
                     onValueChange = { onValueChanged(it, input) },
                     placeholder = {
                         Text(
-                            text = if (focusStateOfSearch) "" else "جستجو کنید",
+                            text = if (focusStateOfSearch) "" else "جستجو کنید"
                         )
                     },
                     shape = RoundedCornerShape(8.dp),
