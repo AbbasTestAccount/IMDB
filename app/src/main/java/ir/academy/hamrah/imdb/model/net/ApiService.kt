@@ -9,16 +9,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
-const val BASE_URL = "http://img.omdbapi.com"
+const val BASE_URL = "http://www.omdbapi.com"
 
 
 interface ApiService {
 
     //todo: add path instead of Batman
-    @GET("/?s=[Batman]")
-    suspend fun getMoviesList(): MoviesList
+    @GET("/?apikey=44236f51")
+    suspend fun getMoviesList(@Query("s") searchTerm: String): MoviesList
 
     //http://www.omdbapi.com/?i=tt0372784
     @GET("/?i={imdbId}")
@@ -31,28 +32,28 @@ interface ApiService {
 
 fun createApiService(): ApiService {
 
-
-    val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor {
-
-            val original = it.request()
-            val originalHttpUrl: HttpUrl = original.url
-
-            val url = originalHttpUrl.newBuilder()
-                .addQueryParameter("apikey", "44236f51")
-                .build()
-
-            val requestBuilder: Request.Builder = original.newBuilder()
-                .url(url)
-            val request: Request = requestBuilder.build()
-            return@addInterceptor it.proceed(request)
-
-        }.build()
+//
+//    val okHttpClient = OkHttpClient.Builder()
+//        .addInterceptor {
+//
+//            val original = it.request()
+//            val originalHttpUrl: HttpUrl = original.url
+//
+//            val url = originalHttpUrl.newBuilder()
+//                .addQueryParameter("apikey", "44236f51")
+//                .build()
+//
+//            val requestBuilder: Request.Builder = original.newBuilder()
+//                .url(url)
+//            val request: Request = requestBuilder.build()
+//            return@addInterceptor it.proceed(request)
+//
+//        }.build()
 
     val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
-        .client(okHttpClient)
+//        .client(okHttpClient)
         .build()
 
     return retrofit.create(ApiService::class.java)
