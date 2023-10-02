@@ -1,33 +1,49 @@
 package ir.academy.hamrah.imdb.model.net
 
+import ir.academy.hamrah.imdb.model.data.MoviesList
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 
 
 const val BASE_URL = "http://img.omdbapi.com"
 
 
 interface ApiService {
+    //todo: add path instead of Batman
+
+    @GET("/?s=[Batman]")
+    suspend fun getMoviesList(): List<MoviesList>
+
+
+
+
 }
 
 
 
 fun createApiService(): ApiService {
 
+
     val okHttpClient = OkHttpClient.Builder()
-//        .addInterceptor {
-//
-//            val oldRequest = it.request()
-//
-//            val newRequest = oldRequest.newBuilder()
-//            newRequest.addHeader("apikey", "44236f51")
-//
-//            newRequest.method(oldRequest.method, oldRequest.body)
-//
-//            return@addInterceptor it.proceed(newRequest.build())
-//        }
-    .build()
+        .addInterceptor {
+
+            val original = it.request()
+            val originalHttpUrl: HttpUrl = original.url
+
+            val url = originalHttpUrl.newBuilder()
+                .addQueryParameter("apikey", "44236f51")
+                .build()
+
+            val requestBuilder: Request.Builder = original.newBuilder()
+                .url(url)
+            val request: Request = requestBuilder.build()
+            return@addInterceptor it.proceed(request)
+
+        }.build()
 
     val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
