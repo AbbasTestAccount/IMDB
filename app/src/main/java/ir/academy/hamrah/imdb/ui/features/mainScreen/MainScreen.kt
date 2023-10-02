@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,8 +30,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,8 +46,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.academy.hamrah.imdb.R
+import ir.academy.hamrah.imdb.ui.theme.LitePurple
+import ir.academy.hamrah.imdb.ui.theme.Purple
 import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
 
 
@@ -52,12 +58,13 @@ fun MainScreen() {
 
     val context = LocalContext.current
 //    val viewModel = getNavViewModel<MainScreenViewModel>()
+    var focusStateOfSearch by remember { mutableStateOf(false) }
 
     val input = remember { mutableStateOf("") }
 
 
     val scrollState = rememberScrollState()
-    Box(contentAlignment = Alignment.TopStart) {
+    Box(contentAlignment = Alignment.TopStart, modifier = Modifier.padding(horizontal = 15.dp)) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -78,7 +85,7 @@ fun MainScreen() {
 
                 for (i in 0..10) {
                     Card(
-                        modifier = Modifier.size(200.dp),
+                        modifier = Modifier.size(180.dp),
                         border = BorderStroke(2.dp, Color.Green)
                     ) {
 
@@ -94,7 +101,7 @@ fun MainScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -103,7 +110,7 @@ fun MainScreen() {
                 modifier = Modifier
                     .size(TOP_ROW_HEIGHT.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.Yellow)
+                    .background(LitePurple)
             ) {
                 Icon(
                     modifier = Modifier
@@ -116,37 +123,52 @@ fun MainScreen() {
                         .padding(5.dp),
                     imageVector = ImageVector.vectorResource(id = R.drawable.filter_icon),
                     contentDescription = "Favorite",
-                    tint = Color.Red
+                    tint = Purple
                 )
             }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 TextField(
                     modifier = Modifier
-                        .fillMaxWidth(0.9f),
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp),
                     value = input.value,
-                    onValueChange = { onValueChanged(it) },
-                    label = { Text("جستجو کنید") },
+                    onValueChange = { onValueChanged(it, input) },
+                    placeholder = {
+                        Text(
+                            text = if (focusStateOfSearch) "" else "جستجو کنید",
+                        )
+                    },
+                    shape = RoundedCornerShape(8.dp),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.search_icon),
                             contentDescription = null,
-                            modifier = Modifier.size(TOP_ROW_HEIGHT.dp),
-                            tint = Color.Black
+                            modifier = Modifier
+                                .size(TOP_ROW_HEIGHT.dp)
+                                .padding(10.dp),
+                            tint = Purple
                         )
                     },
 
-                    colors = TextFieldDefaults.textFieldColors(),
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        containerColor = LitePurple
+                    ),
+
                     singleLine = true,
                     maxLines = 1
                 )
-
-
             }
+
 
         }
     }
 }
 
-fun onValueChanged(searchingWord: String) {
-
+fun onValueChanged(searchingWord: String, input: MutableState<String>) {
+    input.value = searchingWord
 }
