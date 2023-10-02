@@ -1,4 +1,8 @@
 package ir.academy.hamrah.imdb.ui.features.mainScreen
 
-class MainScreenViewModel {
-}
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+
+//class MainScreenViewModel : ViewModel() {
+//
+//}
