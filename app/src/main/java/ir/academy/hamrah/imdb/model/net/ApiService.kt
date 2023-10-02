@@ -1,5 +1,6 @@
 package ir.academy.hamrah.imdb.model.net
 
+import ir.academy.hamrah.imdb.model.data.MovieInfo
 import ir.academy.hamrah.imdb.model.data.MoviesList
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
@@ -7,18 +8,21 @@ import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 
 const val BASE_URL = "http://img.omdbapi.com"
 
 
 interface ApiService {
+
     //todo: add path instead of Batman
-
     @GET("/?s=[Batman]")
-    suspend fun getMoviesList(): List<MoviesList>
+    suspend fun getMoviesList(): MoviesList
 
-
+    //http://www.omdbapi.com/?i=tt0372784
+    @GET("/?i={imdbId}")
+    suspend fun getMovieInfo(@Path("imdbId") imdbId: String) : MovieInfo
 
 
 }
