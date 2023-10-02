@@ -2,10 +2,7 @@ package ir.academy.hamrah.imdb.ui.features.mainScreen
 
 
 import android.util.Log
-import android.widget.Space
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +22,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,17 +48,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.academy.hamrah.imdb.R
 import ir.academy.hamrah.imdb.ui.theme.LitePurple
 import ir.academy.hamrah.imdb.ui.theme.Purple
+import ir.academy.hamrah.imdb.utils.MOVIE_SCREEN
 import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
-
-
 
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -71,6 +67,7 @@ fun MainScreen() {
 
     val context = LocalContext.current
     val viewModel = getNavViewModel<MainScreenViewModel>()
+    val navController = getNavController()
     var focusStateOfSearch by remember { mutableStateOf(false) }
 
     val input = remember { mutableStateOf("") }
@@ -82,12 +79,15 @@ fun MainScreen() {
     val cardWidth = screenWidth / 3 - 30
     viewModel.getMoviesList()
 
-    if (viewModel.moviesList.value.isMovieListEmpty()){
+    if (viewModel.moviesList.value.isMovieListEmpty()) {
         //todo
         Text(text = "Loading")
-    }else{
-        Log.e("list1111", viewModel.moviesList.value.Search.toString(), )
-        Box(contentAlignment = Alignment.TopStart, modifier = Modifier.padding(horizontal = 15.dp)) {
+    } else {
+        Log.e("list1111", viewModel.moviesList.value.Search.toString())
+        Box(
+            contentAlignment = Alignment.TopStart,
+            modifier = Modifier.padding(horizontal = 15.dp)
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -117,17 +117,33 @@ fun MainScreen() {
                                     .height((cardWidth * 1.8).dp)
                                     .padding(top = 20.dp)
                                     .clip(RoundedCornerShape(4.dp))
-                                    .clickable { }
+                                    .clickable {
+                                        navController.navigate("$MOVIE_SCREEN/${viewModel.moviesList.value.Search[i].imdbID}")
+
+                                    }
                             ) {
-                                AsyncImage(model = viewModel.moviesList.value.Search[i].Poster, contentDescription ="Poster", contentScale = ContentScale.FillHeight, modifier = Modifier.fillMaxWidth())
+                                AsyncImage(
+                                    model = viewModel.moviesList.value.Search[i].Poster,
+                                    contentDescription = "Poster",
+                                    contentScale = ContentScale.FillHeight,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                             Spacer(modifier = Modifier.height(5.dp))
-                            Row(modifier = Modifier
-                                .align(Alignment.Start)
-                                .width(cardWidth.dp)) {
+                            Row(
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .width(cardWidth.dp)
+                            ) {
                                 Spacer(modifier = Modifier.width(5.dp))
                                 val title = changeTitle(viewModel.moviesList.value.Search[i].Title)
-                                Text(text = title , maxLines = 3, fontWeight = FontWeight.Bold, fontSize = 12.sp, lineHeight = 16.sp)
+                                Text(
+                                    text = title,
+                                    maxLines = 3,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
+                                    lineHeight = 16.sp
+                                )
                             }
 
                         }
@@ -216,14 +232,16 @@ fun MainScreen() {
 
 }
 
-fun onValueChanged(searchingWord: String, input: MutableState<String>) {
+
+
+private fun onValueChanged(searchingWord: String, input: MutableState<String>) {
     input.value = searchingWord
 }
 
-fun changeTitle(title: String): String {
-    if (title.length < 34){
-        return title
-    }else{
-        return title.substring(0,34)+"..."
+private fun changeTitle(title: String): String {
+    return if (title.length < 34) {
+        title
+    } else {
+        title.substring(0, 34) + "..."
     }
 }

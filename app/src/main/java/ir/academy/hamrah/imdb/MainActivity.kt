@@ -8,8 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dev.burnoo.cokoin.navigation.KoinNavHost
 import ir.academy.hamrah.imdb.ui.features.mainScreen.MainScreen
 import ir.academy.hamrah.imdb.ui.features.movieScreen.MovieScreen
@@ -35,17 +37,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ImdbUi(){
+fun ImdbUi() {
 
     val navController = rememberNavController()
 
-    KoinNavHost(navController = navController, startDestination = MAIN_SCREEN ){
-        composable(MAIN_SCREEN){
+    KoinNavHost(navController = navController, startDestination = MAIN_SCREEN) {
+        composable(MAIN_SCREEN) {
             MainScreen()
         }
 
-        composable(MOVIE_SCREEN){
-            MovieScreen()
+        composable(
+            route = "$MOVIE_SCREEN/{imdbID}",
+            arguments = listOf(navArgument("imdbID") {
+                type = NavType.StringType
+            })
+        ) {
+            MovieScreen(it.arguments!!.getString("imdbID", ""))
         }
+
     }
 }
