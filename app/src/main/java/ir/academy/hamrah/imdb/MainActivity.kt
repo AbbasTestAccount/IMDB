@@ -10,7 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import dev.burnoo.cokoin.navigation.KoinNavHost
+import ir.academy.hamrah.imdb.ui.features.mainScreen.MainScreen
+import ir.academy.hamrah.imdb.ui.features.movieScreen.MovieScreen
 import ir.academy.hamrah.imdb.ui.theme.IMDBTheme
+import ir.academy.hamrah.imdb.utils.MAIN_SCREEN
+import ir.academy.hamrah.imdb.utils.MOVIE_SCREEN
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    ImdbUi()
                 }
             }
         }
@@ -30,17 +37,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun ImdbUi(){
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    IMDBTheme {
-        Greeting("Android")
+    val navController = rememberNavController()
+
+    KoinNavHost(navController = navController, startDestination = MAIN_SCREEN ){
+        composable(MAIN_SCREEN){
+            MainScreen()
+        }
+
+        composable(MOVIE_SCREEN){
+            MovieScreen()
+        }
     }
 }
