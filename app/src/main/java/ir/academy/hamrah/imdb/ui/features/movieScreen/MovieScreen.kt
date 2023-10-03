@@ -2,6 +2,7 @@
 
 package ir.academy.hamrah.imdb.ui.features.movieScreen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -373,11 +374,17 @@ fun titleSize(title: String): Int {
 }
 
 fun calcTime(runtime: String): String {
-    val stringMin = runtime.split(" ")[0]
-    val intMin = stringMin.toInt()
-    val hour = intMin / 60
-    val min = intMin % 60
-    return " $hour:$min"
+    try {
+        val stringMin = runtime.split(" ")[0]
+        val intMin = stringMin.toInt()
+        val hour = intMin / 60
+        val min = intMin % 60
+        return " $hour:$min"
+    }catch (e: Exception){
+        Log.e("timeError", e.toString() )
+        return "?"
+    }
+
 }
 
 @Composable
