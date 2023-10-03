@@ -3,6 +3,7 @@ package ir.academy.hamrah.imdb.ui.features.mainScreen
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,6 +62,7 @@ import ir.academy.hamrah.imdb.ui.theme.LitePurple
 import ir.academy.hamrah.imdb.ui.theme.Purple
 import ir.academy.hamrah.imdb.utils.MOVIE_SCREEN
 import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -74,6 +77,8 @@ fun MainScreen() {
     val input = remember { mutableStateOf("") }
 
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -154,6 +159,9 @@ fun MainScreen() {
                 Spacer(modifier = Modifier.height(10.dp))
                 PageSelect(viewModel.moviesList.value.totalResults.toInt(), viewModel.pageNumber){
                     viewModel.clearMoviesList()
+                    coroutineScope.launch {
+                        scrollState.animateScrollTo(0, tween(300))
+                    }
                 }
 
 
