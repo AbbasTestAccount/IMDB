@@ -312,6 +312,8 @@ private fun onValueChanged(
     input.value = searchingWord
     if (input.value.length > 2) {
         searchTerm.value = input.value
+    } else if (input.value.isEmpty()) {
+        searchTerm.value = "Batman"
     }
 }
 
