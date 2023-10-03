@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +20,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +31,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -58,6 +62,7 @@ import coil.compose.AsyncImage
 import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.academy.hamrah.imdb.R
+import ir.academy.hamrah.imdb.ui.theme.HeavyPurple
 import ir.academy.hamrah.imdb.ui.theme.LitePurple
 import ir.academy.hamrah.imdb.ui.theme.Purple
 import ir.academy.hamrah.imdb.utils.MOVIE_SCREEN
@@ -78,6 +83,7 @@ fun MainScreen() {
 
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
 
 
     val configuration = LocalConfiguration.current
@@ -159,17 +165,20 @@ fun MainScreen() {
                     }
                 }
                 if (!viewModel.moviesList.value.Search.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     PageSelect(
                         viewModel.moviesList.value.totalResults.toInt(),
-                        viewModel.pageNumber
+                        viewModel.pageNumber,
+                        lazyListState
                     ) {
                         viewModel.clearMoviesList()
                         coroutineScope.launch {
                             scrollState.animateScrollTo(0, tween(300))
                         }
                     }
+                    Spacer(modifier = Modifier.height(20.dp))
+
                 } else {
                     Text(
                         text = "There is no result",
@@ -265,19 +274,21 @@ fun MainScreen() {
 }
 
 @Composable
-fun PageSelect(movieCount: Int, pageNumber: MutableState<Int>, onPageSelect: () -> Unit) {
+fun PageSelect(movieCount: Int, pageNumber: MutableState<Int>, lazyListState: LazyListState, onPageSelect: () -> Unit) {
 
-    LazyRow {
+    LazyRow(state = lazyListState) {
         items(movieCount / 10 + lastPage(movieCount)) {
             IconButton(
                 onClick = {
-                    onPageSelect()
-                    pageNumber.value = it + 1
+                    if (pageNumber.value != it+1){
+                        pageNumber.value = it+1
+                        onPageSelect()
+                    }
                 },
-                modifier = Modifier.background(
+                modifier = Modifier.padding(end = 5.dp).background(
                     color = pageSelectColor(it + 1, pageNumber.value),
                     shape = CircleShape
-                )
+                ).border(1.dp, HeavyPurple, CircleShape),
             ) {
                 Text(text = (it + 1).toString(), textAlign = TextAlign.Center)
             }
