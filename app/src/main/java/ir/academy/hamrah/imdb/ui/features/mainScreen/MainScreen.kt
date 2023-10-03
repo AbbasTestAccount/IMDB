@@ -59,6 +59,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.academy.hamrah.imdb.R
@@ -84,6 +88,7 @@ fun MainScreen() {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading_animation))
 
 
     val configuration = LocalConfiguration.current
@@ -92,8 +97,7 @@ fun MainScreen() {
     viewModel.getMoviesList()
 
     if (viewModel.moviesList.value.isMovieListEmpty()) {
-        //todo
-        Text(text = "Loading")
+        LottieAnimation(composition = composition, iterations = LottieConstants.IterateForever, speed = 5f )
     } else {
         Log.e("list1111", viewModel.moviesList.value.Response)
         Box(
@@ -285,10 +289,13 @@ fun PageSelect(movieCount: Int, pageNumber: MutableState<Int>, lazyListState: La
                         onPageSelect()
                     }
                 },
-                modifier = Modifier.padding(end = 5.dp).background(
-                    color = pageSelectColor(it + 1, pageNumber.value),
-                    shape = CircleShape
-                ).border(1.dp, HeavyPurple, CircleShape),
+                modifier = Modifier
+                    .padding(end = 5.dp)
+                    .background(
+                        color = pageSelectColor(it + 1, pageNumber.value),
+                        shape = CircleShape
+                    )
+                    .border(1.dp, HeavyPurple, CircleShape),
             ) {
                 Text(text = (it + 1).toString(), textAlign = TextAlign.Center)
             }
