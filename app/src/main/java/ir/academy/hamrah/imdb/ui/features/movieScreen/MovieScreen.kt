@@ -1,6 +1,5 @@
 package ir.academy.hamrah.imdb.ui.features.movieScreen
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,11 +33,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.viewmodel.getViewModel
 import ir.academy.hamrah.imdb.R
-import ir.academy.hamrah.imdb.ui.theme.LitePurple
+import ir.academy.hamrah.imdb.model.data.MovieInfo
 import ir.academy.hamrah.imdb.ui.theme.LitePurpleOpacity
 import ir.academy.hamrah.imdb.ui.theme.Purple
 import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
@@ -51,6 +51,8 @@ fun MovieScreen(id: String) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
     val imageHeight = 3 * screenHeight / 10
+    val screenWidth = configuration.screenWidthDp
+    val imageWidth = 3 * screenWidth / 10
 
     if (viewModel.movieInfo.value.imdbID == "") {
         //todo: loading
@@ -173,10 +175,24 @@ fun MovieScreen(id: String) {
                     shape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    Column(modifier = Modifier.padding(top = 20.dp, start = 15.dp, end = 15.dp)) {
-                        Text(text = "alsjkhjghgvad")
-                        Spacer(modifier = Modifier.height(200.dp))
-                        Text(text = "alsjkhjghgvad")
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 20.dp, start = 15.dp, end = 15.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.weight(2f)) {
+
+                                LeftElementsOfPoster(movieInfo)
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+
+                                MoviePoster(imageWidth, movieInfo)
+                            }
+                        }
                     }
 
 
@@ -187,5 +203,60 @@ fun MovieScreen(id: String) {
 
 
         }
+    }
+}
+
+@Composable
+fun LeftElementsOfPoster(movieInfo: MovieInfo) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+        Row() {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.time_icon),
+                contentDescription = "time icon",
+                Modifier.size(18.dp)
+            )
+            Text(text = calcTime(movieInfo.Runtime), fontSize = 14.sp)
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.view_icon),
+                contentDescription = "view icon",
+                Modifier.size(18.dp)
+            )
+            Text(text = " " + movieInfo.imdbVotes, fontSize = 14.sp)
+        }
+
+        Row {
+            Text(text = movieInfo.Year , fontSize = 14.sp)
+            Spacer(modifier = Modifier.width(10.dp))
+        }
+
+    }
+}
+
+fun calcTime(runtime: String): String {
+    val stringMin = runtime.split(" ")[0]
+    val intMin = stringMin.toInt()
+    val hour = intMin/60
+    val min = intMin%60
+    return " $hour:$min"
+}
+
+@Composable
+fun MoviePoster(imageWidth: Int, movieInfo: MovieInfo) {
+    Card(
+        modifier = Modifier
+            .width(imageWidth.dp)
+            .height((imageWidth * 1.8).dp)
+            .clip(RoundedCornerShape(4.dp))
+
+    ) {
+        AsyncImage(
+            model = movieInfo.Poster,
+            contentDescription = "Poster",
+            contentScale = ContentScale.FillHeight,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
