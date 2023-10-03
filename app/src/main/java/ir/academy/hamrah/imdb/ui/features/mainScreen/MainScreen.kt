@@ -103,7 +103,6 @@ fun MainScreen() {
                         Color.White
                     )
                     .verticalScroll(scrollState)
-                    .padding(bottom = 50.dp)
             ) {
 
 
@@ -115,53 +114,72 @@ fun MainScreen() {
                     maxItemsInEachRow = 3
                 ) {
 
-                    for (i in 0 until viewModel.moviesList.value.Search.size) {
-                        Column {
-                            Card(
-                                modifier = Modifier
-                                    .width(cardWidth.dp)
-                                    .height((cardWidth * 1.8).dp)
-                                    .padding(top = 20.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .clickable {
-                                        navController.navigate("$MOVIE_SCREEN/${viewModel.moviesList.value.Search[i].imdbID}")
+                    if (!viewModel.moviesList.value.Search.isNullOrEmpty()) {
+                        for (i in 0 until viewModel.moviesList.value.Search.size) {
+                            Column {
+                                Card(
+                                    modifier = Modifier
+                                        .width(cardWidth.dp)
+                                        .height((cardWidth * 1.8).dp)
+                                        .padding(top = 20.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .clickable {
+                                            navController.navigate("$MOVIE_SCREEN/${viewModel.moviesList.value.Search[i].imdbID}")
 
-                                    }
-                            ) {
-                                AsyncImage(
-                                    model = viewModel.moviesList.value.Search[i].Poster,
-                                    contentDescription = "Poster",
-                                    contentScale = ContentScale.FillHeight,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Row(
-                                modifier = Modifier
-                                    .align(Alignment.Start)
-                                    .width(cardWidth.dp)
-                            ) {
-                                Spacer(modifier = Modifier.width(5.dp))
-                                val title = changeTitle(viewModel.moviesList.value.Search[i].Title)
-                                Text(
-                                    text = title,
-                                    maxLines = 3,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp,
-                                    lineHeight = 16.sp
-                                )
-                            }
+                                        }
+                                ) {
+                                    AsyncImage(
+                                        model = viewModel.moviesList.value.Search[i].Poster,
+                                        contentDescription = "Poster",
+                                        contentScale = ContentScale.FillHeight,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(5.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.Start)
+                                        .width(cardWidth.dp)
+                                ) {
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                    val title =
+                                        changeTitle(viewModel.moviesList.value.Search[i].Title)
+                                    Text(
+                                        text = title,
+                                        maxLines = 3,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                        lineHeight = 16.sp
+                                    )
+                                }
 
+                            }
                         }
+
                     }
                 }
+                if (!viewModel.moviesList.value.Search.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                Spacer(modifier = Modifier.height(10.dp))
-                PageSelect(viewModel.moviesList.value.totalResults.toInt(), viewModel.pageNumber){
-                    viewModel.clearMoviesList()
-                    coroutineScope.launch {
-                        scrollState.animateScrollTo(0, tween(300))
+                    PageSelect(
+                        viewModel.moviesList.value.totalResults.toInt(),
+                        viewModel.pageNumber
+                    ) {
+                        viewModel.clearMoviesList()
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(0, tween(300))
+                        }
                     }
+                } else {
+                    Text(
+                        text = "There is no result",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 70.dp),
+                        textAlign = TextAlign.Center
+                    )
                 }
 
 
@@ -254,14 +272,14 @@ fun PageSelect(movieCount: Int, pageNumber: MutableState<Int>, onPageSelect: () 
             IconButton(
                 onClick = {
                     onPageSelect()
-                    pageNumber.value = it+1
+                    pageNumber.value = it + 1
                 },
                 modifier = Modifier.background(
-                    color = pageSelectColor(it+1, pageNumber.value),
+                    color = pageSelectColor(it + 1, pageNumber.value),
                     shape = CircleShape
                 )
             ) {
-                Text(text = (it+1).toString(), textAlign = TextAlign.Center)
+                Text(text = (it + 1).toString(), textAlign = TextAlign.Center)
             }
 
         }
@@ -270,9 +288,9 @@ fun PageSelect(movieCount: Int, pageNumber: MutableState<Int>, onPageSelect: () 
 }
 
 fun lastPage(categoryProductCount: Int): Int {
-    return if (categoryProductCount%10 == 0){
+    return if (categoryProductCount % 10 == 0) {
         0
-    }else{
+    } else {
         1
     }
 }
@@ -286,14 +304,13 @@ fun pageSelectColor(i: Int, intValue: Int): Color {
 }
 
 
-
 private fun onValueChanged(
     searchingWord: String,
     input: MutableState<String>,
     searchTerm: MutableState<String>
 ) {
     input.value = searchingWord
-    if (input.value.length>2){
+    if (input.value.length > 2) {
         searchTerm.value = input.value
     }
 }
