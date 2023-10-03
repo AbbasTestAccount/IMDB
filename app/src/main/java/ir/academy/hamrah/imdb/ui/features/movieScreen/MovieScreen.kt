@@ -2,7 +2,9 @@
 
 package ir.academy.hamrah.imdb.ui.features.movieScreen
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,6 +66,7 @@ import ir.academy.hamrah.imdb.ui.theme.BackgroundHeavyPurple
 import ir.academy.hamrah.imdb.ui.theme.HeavyPurple
 import ir.academy.hamrah.imdb.ui.theme.LitePurpleOpacity
 import ir.academy.hamrah.imdb.ui.theme.Purple
+import ir.academy.hamrah.imdb.utils.MOVIE_SCREEN
 import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
 
 @Composable
@@ -70,6 +74,8 @@ fun MovieScreen(id: String) {
     val viewModel = getViewModel<MovieScreenViewModel>()
     viewModel.getMovieInfo(id)
     viewModel.getMoviesList("Batman")
+
+    val context = LocalContext.current
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
@@ -246,7 +252,7 @@ fun MovieScreen(id: String) {
 
                             MovieTagsChips(movieInfo)
 
-                            TitlePiece(title = "More like this")
+                            TitlePiece(title = "More like this", context)
                         }
 
                         if (viewModel.moviesList.value.isMovieListEmpty()) {
@@ -254,7 +260,7 @@ fun MovieScreen(id: String) {
 
                         } else {
                             ProductRow(imageWidth.dp, viewModel.moviesList.value) {
-
+                                navController.navigate("$MOVIE_SCREEN/$it")
                             }
                         }
 
@@ -438,7 +444,7 @@ fun MovieTagsChips(movieInfo: MovieInfo) {
 }
 
 @Composable
-fun TitlePiece(title: String) {
+fun TitlePiece(title: String, context: Context) {
 
     Row(
         Modifier
@@ -454,7 +460,7 @@ fun TitlePiece(title: String) {
             fontWeight = FontWeight.Bold
         )
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = { Toast.makeText(context, "api doesn't give me 'more like this' ", Toast.LENGTH_SHORT).show()}) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.left_arrow_icon),
                 contentDescription = "more arrow",
