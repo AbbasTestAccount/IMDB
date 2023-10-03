@@ -78,13 +78,13 @@ fun MainScreen() {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val cardWidth = screenWidth / 3 - 30
-    viewModel.getMoviesList("Batman")
+    viewModel.getMoviesList()
 
     if (viewModel.moviesList.value.isMovieListEmpty()) {
         //todo
         Text(text = "Loading")
     } else {
-        Log.e("list1111", viewModel.moviesList.value.Search.toString())
+        Log.e("list1111", viewModel.moviesList.value.Response)
         Box(
             contentAlignment = Alignment.TopStart,
             modifier = Modifier.padding(horizontal = 15.dp)
@@ -201,7 +201,7 @@ fun MainScreen() {
                             .fillMaxWidth()
                             .padding(vertical = 5.dp),
                         value = input.value,
-                        onValueChange = { onValueChanged(it, input) },
+                        onValueChange = { onValueChanged(it, input, viewModel.searchTerm) },
                         placeholder = {
                             Text(
                                 text = if (focusStateOfSearch) "" else "جستجو کنید"
@@ -279,8 +279,15 @@ fun pageSelectColor(i: Int, intValue: Int): Color {
 
 
 
-private fun onValueChanged(searchingWord: String, input: MutableState<String>) {
+private fun onValueChanged(
+    searchingWord: String,
+    input: MutableState<String>,
+    searchTerm: MutableState<String>
+) {
     input.value = searchingWord
+    if (input.value.length>2){
+        searchTerm.value = input.value
+    }
 }
 
 fun changeTitle(title: String): String {
