@@ -2,6 +2,7 @@
 
 package ir.academy.hamrah.imdb.ui.features.movieScreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,11 +34,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +48,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -50,6 +56,8 @@ import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.viewmodel.getViewModel
 import ir.academy.hamrah.imdb.R
 import ir.academy.hamrah.imdb.model.data.MovieInfo
+import ir.academy.hamrah.imdb.model.data.MoviesList
+import ir.academy.hamrah.imdb.ui.features.mainScreen.changeTitle
 import ir.academy.hamrah.imdb.ui.theme.BackgroundHeavyPurple
 import ir.academy.hamrah.imdb.ui.theme.HeavyPurple
 import ir.academy.hamrah.imdb.ui.theme.LitePurpleOpacity
@@ -60,6 +68,7 @@ import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
 fun MovieScreen(id: String) {
     val viewModel = getViewModel<MovieScreenViewModel>()
     viewModel.getMovieInfo(id)
+    viewModel.getMoviesList()
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
@@ -190,47 +199,66 @@ fun MovieScreen(id: String) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(top = 20.dp, start = 15.dp, end = 15.dp)
+                            .padding(top = 20.dp)
                             .fillMaxWidth()
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 15.dp, end = 15.dp)
+                                .fillMaxWidth()
                         ) {
-                            Column(modifier = Modifier.weight(2f)) {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(modifier = Modifier.weight(2f)) {
 
-                                LeftElementsOfPoster(movieInfo)
+                                    LeftElementsOfPoster(movieInfo)
+                                }
+                                Column(modifier = Modifier.weight(1f)) {
+
+                                    MoviePoster(imageWidth, movieInfo)
+                                }
                             }
-                            Column(modifier = Modifier.weight(1f)) {
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                                MoviePoster(imageWidth, movieInfo)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                MovieIcons(R.drawable.save_icon, "نشان کردن")
+                                MovieIcons(R.drawable.bubble_icon, "56")
+                                MovieIcons(R.drawable.heart_icon, "96")
+                                MovieIcons(R.drawable.share_icon, "اشتراک")
+
+                            }
+
+                            Text(
+                                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
+                                        " sed do eiusmod tempor incididunt ut labore et dolore magna" +
+                                        " aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
+                                        " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor",
+                                fontSize = 12.sp,
+                                textAlign = TextAlign.Justify,
+                                lineHeight = 16.sp,
+                                modifier = Modifier.padding(top = 10.dp)
+                            )
+
+                            MovieTagsChips(movieInfo)
+
+                            TitlePiece(title = "More like this")
+                        }
+
+                        if (viewModel.moviesList.value.isMovieListEmpty()) {
+                            Text(text = "Loading....")
+
+                        } else {
+                            ProductRow(imageWidth.dp, viewModel.moviesList.value) {
+
                             }
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            MovieIcons(R.drawable.save_icon, "نشان کردن")
-                            MovieIcons(R.drawable.bubble_icon, "56")
-                            MovieIcons(R.drawable.heart_icon, "96")
-                            MovieIcons(R.drawable.share_icon, "اشتراک")
 
-                        }
-
-                        Text(
-                            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
-                                    " sed do eiusmod tempor incididunt ut labore et dolore magna" +
-                                    " aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
-                                    " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor",
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Justify,
-                            lineHeight = 16.sp,
-                            modifier = Modifier.padding(top = 10.dp)
-                        )
-
-                        MovieTagsChips(movieInfo)
                     }
 
 
@@ -393,10 +421,93 @@ fun MovieTagsChips(movieInfo: MovieInfo) {
                 border = AssistChipDefaults.assistChipBorder(borderColor = Color.Transparent),
                 modifier = Modifier
                     .wrapContentSize(),
-                colors = AssistChipDefaults.assistChipColors(containerColor = BackgroundHeavyPurple, labelColor = HeavyPurple)
+                colors = AssistChipDefaults.assistChipColors(
+                    containerColor = BackgroundHeavyPurple,
+                    labelColor = HeavyPurple
+                )
             )
             Spacer(modifier = Modifier.width(5.dp))
         }
+    }
+}
 
+@Composable
+fun TitlePiece(title: String) {
+
+    Row(
+        Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(end = 20.dp),
+            color = HeavyPurple,
+            fontWeight = FontWeight.Bold
+        )
+
+        IconButton(onClick = {}) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.left_arrow_icon),
+                contentDescription = "more arrow",
+                modifier = Modifier
+                    .rotate(180f)
+                    .size(35.dp)
+            )
+
+        }
+    }
+}
+
+
+@Composable
+fun ProductRow(
+    cardWidth: Dp,
+    moviesList: MoviesList,
+    onMovieClicked: (String) -> Unit
+) {
+    LazyRow(contentPadding = PaddingValues(start = 10.dp)) {
+        items(6) { i ->
+
+            Column() {
+                Card(
+                    onClick = { onMovieClicked(moviesList.Search[i].imdbID) },
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                    border = BorderStroke(1.dp, Color.Black),
+                    modifier = Modifier
+                        .size(width = cardWidth, height = cardWidth + 60.dp)
+                        .padding(start = 10.dp)
+                ) {
+                    AsyncImage(
+                        model = moviesList.Search[i].Poster,
+                        contentDescription = null,
+                        modifier = Modifier.width(cardWidth),
+                        contentScale = ContentScale.FillBounds,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .width(cardWidth)
+                        .padding(start = 10.dp)
+
+                ) {
+                    Spacer(modifier = Modifier.width(5.dp))
+                    val title = changeTitle(moviesList.Search[i].Title)
+                    Text(
+                        text = title,
+                        maxLines = 3,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp
+                    )
+
+                }
+
+            }
+        }
     }
 }

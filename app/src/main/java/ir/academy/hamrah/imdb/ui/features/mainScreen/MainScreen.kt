@@ -238,7 +238,7 @@ private fun onValueChanged(searchingWord: String, input: MutableState<String>) {
     input.value = searchingWord
 }
 
-private fun changeTitle(title: String): String {
+fun changeTitle(title: String): String {
     return if (title.length < 34) {
         title
     } else {
