@@ -31,7 +31,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -114,8 +113,6 @@ fun MainScreen() {
                     )
                     .verticalScroll(scrollState)
             ) {
-
-
                 FlowRow(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
@@ -123,7 +120,6 @@ fun MainScreen() {
                         .fillMaxWidth(),
                     maxItemsInEachRow = 3
                 ) {
-
                     if (!viewModel.moviesList.value.Search.isNullOrEmpty()) {
                         for (i in 0 until viewModel.moviesList.value.Search.size) {
                             Column {
@@ -135,7 +131,6 @@ fun MainScreen() {
                                         .clip(RoundedCornerShape(4.dp))
                                         .clickable {
                                             navController.navigate("$MOVIE_SCREEN/${viewModel.moviesList.value.Search[i].imdbID}")
-
                                         }
                                 ) {
                                     AsyncImage(
@@ -162,10 +157,8 @@ fun MainScreen() {
                                         lineHeight = 16.sp
                                     )
                                 }
-
                             }
                         }
-
                     }
                 }
                 if (!viewModel.moviesList.value.Search.isNullOrEmpty()) {
@@ -182,7 +175,6 @@ fun MainScreen() {
                         }
                     }
                     Spacer(modifier = Modifier.height(20.dp))
-
                 } else {
                     Text(
                         text = "There is no result",
@@ -194,8 +186,6 @@ fun MainScreen() {
                         textAlign = TextAlign.Center
                     )
                 }
-
-
             }
 
 
@@ -207,8 +197,6 @@ fun MainScreen() {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-
                 IconButton(
                     onClick = {},
                     modifier = Modifier
@@ -257,24 +245,18 @@ fun MainScreen() {
                                 tint = Purple
                             )
                         },
-
                         colors = TextFieldDefaults.textFieldColors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             containerColor = LitePurple
                         ),
-
                         singleLine = true,
                         maxLines = 1
                     )
                 }
-
-
             }
         }
-
     }
-
 }
 
 @Composable
