@@ -487,6 +487,7 @@ fun ProductRow(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(5.dp))
                 Row(
                     modifier = Modifier
                         .align(Alignment.Start)
