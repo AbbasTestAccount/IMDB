@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -208,38 +210,94 @@ fun MovieScreen(id: String) {
 
 @Composable
 fun LeftElementsOfPoster(movieInfo: MovieInfo) {
-    Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-        Row() {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.time_icon),
-                contentDescription = "time icon",
-                Modifier.size(18.dp)
-            )
-            Text(text = calcTime(movieInfo.Runtime), fontSize = 14.sp)
+    Column() {
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            Row() {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.time_icon),
+                    contentDescription = "time icon",
+                    Modifier.size(18.dp)
+                )
+                Text(text = calcTime(movieInfo.Runtime), fontSize = 14.sp)
 
-            Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.view_icon),
-                contentDescription = "view icon",
-                Modifier.size(18.dp)
-            )
-            Text(text = " " + movieInfo.imdbVotes, fontSize = 14.sp)
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.view_icon),
+                    contentDescription = "view icon",
+                    Modifier.size(18.dp)
+                )
+                Text(text = " " + movieInfo.imdbVotes, fontSize = 14.sp)
+            }
+
+            Row {
+                Text(text = movieInfo.Year, fontSize = 14.sp)
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
         }
 
-        Row {
-            Text(text = movieInfo.Year , fontSize = 14.sp)
-            Spacer(modifier = Modifier.width(10.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = movieInfo.Title,
+                    maxLines = 3,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = titleSize(movieInfo.Title).sp
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 10.dp)
+            ) {
+
+                Text(
+                    text = "عنوان فارسی",
+                    modifier = Modifier.align(Alignment.End),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+
+            }
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = movieInfo.Plot,
+            fontSize = 12.sp,
+            textAlign = TextAlign.Justify,
+            lineHeight = 16.sp,
+            modifier = Modifier.padding(end = 10.dp)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(text = "IMDB : " + movieInfo.imdbRating)
+
 
     }
+}
+
+fun titleSize(title: String): Int {
+    return if (title.length < 26) {
+        18
+    } else if (title.length < 34) {
+        16
+    } else {
+        14
+    }
+
 }
 
 fun calcTime(runtime: String): String {
     val stringMin = runtime.split(" ")[0]
     val intMin = stringMin.toInt()
-    val hour = intMin/60
-    val min = intMin%60
+    val hour = intMin / 60
+    val min = intMin % 60
     return " $hour:$min"
 }
 
