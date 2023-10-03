@@ -410,7 +410,7 @@ fun MovieTagsChips(movieInfo: MovieInfo) {
     val genres = movieInfo.Genre.split(", ")
 
     FlowRow(
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier.padding(vertical = 10.dp)
     ) {
 
