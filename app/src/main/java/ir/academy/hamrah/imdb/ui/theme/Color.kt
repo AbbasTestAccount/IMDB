@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 val LitePurple = Color(0xFFEDE7F6)
 val LitePurpleOpacity = Color(0x66EDE7F6)
 val Purple = Color(0xFF673AB7)
+val BackgroundHeavyPurple = Color(0xFFB39DDB)
 val HeavyPurple = Color(0xFF512DA8)
 
 val Purple40 = Color(0xFF6650a4)

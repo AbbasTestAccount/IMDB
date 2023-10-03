@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+
 package ir.academy.hamrah.imdb.ui.features.movieScreen
 
 import androidx.compose.foundation.background
@@ -5,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,13 +19,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -43,6 +50,8 @@ import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.viewmodel.getViewModel
 import ir.academy.hamrah.imdb.R
 import ir.academy.hamrah.imdb.model.data.MovieInfo
+import ir.academy.hamrah.imdb.ui.theme.BackgroundHeavyPurple
+import ir.academy.hamrah.imdb.ui.theme.HeavyPurple
 import ir.academy.hamrah.imdb.ui.theme.LitePurpleOpacity
 import ir.academy.hamrah.imdb.ui.theme.Purple
 import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
@@ -199,7 +208,10 @@ fun MovieScreen(id: String) {
                         }
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
                             MovieIcons(R.drawable.save_icon, "نشان کردن")
                             MovieIcons(R.drawable.bubble_icon, "56")
                             MovieIcons(R.drawable.heart_icon, "96")
@@ -211,15 +223,14 @@ fun MovieScreen(id: String) {
                             text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
                                     " sed do eiusmod tempor incididunt ut labore et dolore magna" +
                                     " aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
-                                    " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor" +
-                                    " in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." +
-                                    " Excepteur sint occaecat cupidatat non proident, sunt in culpa qui" +
-                                    " officia deserunt mollit anim id est laborum.",
+                                    " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor",
                             fontSize = 12.sp,
                             textAlign = TextAlign.Justify,
                             lineHeight = 16.sp,
-                            modifier = Modifier.padding(end = 10.dp)
+                            modifier = Modifier.padding(top = 10.dp)
                         )
+
+                        MovieTagsChips(movieInfo)
                     }
 
 
@@ -357,5 +368,35 @@ fun MoviePoster(imageWidth: Int, movieInfo: MovieInfo) {
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxWidth()
         )
+    }
+}
+
+@Composable
+fun MovieTagsChips(movieInfo: MovieInfo) {
+    val genres = movieInfo.Genre.split(", ")
+
+    FlowRow(
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.padding(vertical = 10.dp)
+    ) {
+
+
+        for (i in 0 until genres.size) {
+
+            AssistChip(
+                onClick = {},
+                label = {
+                    Text(
+                        text = genres[i]
+                    )
+                },
+                border = AssistChipDefaults.assistChipBorder(borderColor = Color.Transparent),
+                modifier = Modifier
+                    .wrapContentSize(),
+                colors = AssistChipDefaults.assistChipColors(containerColor = BackgroundHeavyPurple, labelColor = HeavyPurple)
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+        }
+
     }
 }
