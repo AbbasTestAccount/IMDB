@@ -5,7 +5,7 @@ import ir.academy.hamrah.imdb.model.data.MoviesList
 
 interface MovieRepository {
 
-    suspend fun getMoviesList(searchTerm: String): MoviesList
+    suspend fun getMoviesList(searchTerm: String, page : Int = 1): MoviesList
 
     suspend fun getMovieInfo(imdbId: String): MovieInfo
 

@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -46,6 +48,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -107,7 +110,7 @@ fun MainScreen() {
                     maxItemsInEachRow = 3
                 ) {
 
-                    for (i in 0 until 10) {
+                    for (i in 0 until viewModel.moviesList.value.Search.size) {
                         Column {
                             Card(
                                 modifier = Modifier
@@ -146,6 +149,11 @@ fun MainScreen() {
 
                         }
                     }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                PageSelect(viewModel.moviesList.value.totalResults.toInt(), viewModel.pageNumber){
+                    viewModel.clearMoviesList()
                 }
 
 
@@ -228,6 +236,45 @@ fun MainScreen() {
 
     }
 
+}
+
+@Composable
+fun PageSelect(movieCount: Int, pageNumber: MutableState<Int>, onPageSelect: () -> Unit) {
+
+    LazyRow {
+        items(movieCount / 10 + lastPage(movieCount)) {
+            IconButton(
+                onClick = {
+                    onPageSelect()
+                    pageNumber.value = it+1
+                },
+                modifier = Modifier.background(
+                    color = pageSelectColor(it+1, pageNumber.value),
+                    shape = CircleShape
+                )
+            ) {
+                Text(text = (it+1).toString(), textAlign = TextAlign.Center)
+            }
+
+        }
+
+    }
+}
+
+fun lastPage(categoryProductCount: Int): Int {
+    return if (categoryProductCount%10 == 0){
+        0
+    }else{
+        1
+    }
+}
+
+fun pageSelectColor(i: Int, intValue: Int): Color {
+    return if (i == intValue) {
+        LitePurple
+    } else {
+        Color.Transparent
+    }
 }
 
 

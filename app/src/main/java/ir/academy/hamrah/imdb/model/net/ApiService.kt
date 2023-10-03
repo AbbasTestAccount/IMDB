@@ -17,7 +17,7 @@ const val BASE_URL = "http://www.omdbapi.com"
 interface ApiService {
 
     @GET("/")
-    suspend fun getMoviesList(@Query("s") searchTerm: String): MoviesList
+    suspend fun getMoviesList(@Query("s") searchTerm: String, @Query("page") page: Int = 1): MoviesList
 
     @GET("/")
     suspend fun getMovieInfo(@Query("i") imdbId: String) : MovieInfo

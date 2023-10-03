@@ -11,11 +11,21 @@ import kotlinx.coroutines.launch
 class MainScreenViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
     val moviesList = mutableStateOf(EMPTY_MOVIE_LIST)
+    var pageNumber = mutableStateOf(1)
+//    val showMovies = mutableStateOf(false)
+
+
 
     fun getMoviesList(searchTerm: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            moviesList.value = movieRepository.getMoviesList(searchTerm, pageNumber.value)
+        }
+    }
 
-            moviesList.value = movieRepository.getMoviesList(searchTerm)
+
+    fun clearMoviesList(){
+        viewModelScope.launch(Dispatchers.IO) {
+            moviesList.value = EMPTY_MOVIE_LIST
         }
     }
 
