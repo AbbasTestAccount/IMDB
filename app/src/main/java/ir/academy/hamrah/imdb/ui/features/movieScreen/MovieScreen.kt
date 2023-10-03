@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -172,7 +174,7 @@ fun MovieScreen(id: String) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(420.dp)
+                        .wrapContentHeight()
                         .offset(y = -(imageHeight * 0.3).dp),
                     shape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -195,6 +197,29 @@ fun MovieScreen(id: String) {
                                 MoviePoster(imageWidth, movieInfo)
                             }
                         }
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                            MovieIcons(R.drawable.save_icon, "نشان کردن")
+                            MovieIcons(R.drawable.bubble_icon, "56")
+                            MovieIcons(R.drawable.heart_icon, "96")
+                            MovieIcons(R.drawable.share_icon, "اشتراک")
+
+                        }
+
+                        Text(
+                            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
+                                    " sed do eiusmod tempor incididunt ut labore et dolore magna" +
+                                    " aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco" +
+                                    " laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor" +
+                                    " in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." +
+                                    " Excepteur sint occaecat cupidatat non proident, sunt in culpa qui" +
+                                    " officia deserunt mollit anim id est laborum.",
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Justify,
+                            lineHeight = 16.sp,
+                            modifier = Modifier.padding(end = 10.dp)
+                        )
                     }
 
 
@@ -205,6 +230,22 @@ fun MovieScreen(id: String) {
 
 
         }
+    }
+}
+
+@Composable
+fun MovieIcons(iconId: Int, s: String) {
+    Column(verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(4.dp)
+            )
+            .size(80.dp)
+            .clickable { }) {
+        Icon(imageVector = ImageVector.vectorResource(id = iconId), contentDescription = "$s icon")
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(text = s, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }
 
