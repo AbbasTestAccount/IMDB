@@ -98,7 +98,6 @@ fun MovieScreen(id: String) {
                 .fillMaxHeight()
 
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 50.dp)
         ) {
 
 
@@ -417,7 +416,7 @@ fun MovieTagsChips(movieInfo: MovieInfo) {
 
     FlowRow(
         horizontalArrangement = Arrangement.Start,
-        modifier = Modifier.padding(vertical = 10.dp)
+        modifier = Modifier.padding(vertical = 15.dp)
     ) {
 
 
