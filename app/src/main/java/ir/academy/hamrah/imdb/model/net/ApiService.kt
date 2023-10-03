@@ -8,7 +8,6 @@ import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -17,11 +16,9 @@ const val BASE_URL = "http://www.omdbapi.com"
 
 interface ApiService {
 
-    //todo: add path instead of Batman
     @GET("/")
     suspend fun getMoviesList(@Query("s") searchTerm: String): MoviesList
 
-    //http://www.omdbapi.com/?i=tt0372784
     @GET("/")
     suspend fun getMovieInfo(@Query("i") imdbId: String) : MovieInfo
 
@@ -40,7 +37,9 @@ fun createApiService(): ApiService {
             val originalHttpUrl: HttpUrl = original.url
 
             val url = originalHttpUrl.newBuilder()
-                .addQueryParameter("apikey", "44236f51")
+                .addQueryParameter("apikey", "44236f51") //this key should be hidden
+                                                                    //and i shouldn't push it in my github
+                                                                    //but because it's a sample project i didn't hide that
                 .build()
 
             val requestBuilder: Request.Builder = original.newBuilder()

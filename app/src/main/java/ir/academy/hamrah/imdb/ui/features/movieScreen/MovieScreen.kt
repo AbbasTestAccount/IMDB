@@ -68,7 +68,7 @@ import ir.academy.hamrah.imdb.utils.TOP_ROW_HEIGHT
 fun MovieScreen(id: String) {
     val viewModel = getViewModel<MovieScreenViewModel>()
     viewModel.getMovieInfo(id)
-    viewModel.getMoviesList()
+    viewModel.getMoviesList("Batman")
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
@@ -95,8 +95,7 @@ fun MovieScreen(id: String) {
         ) {
 
 
-            Column() {
-
+            Column {
 
                 Box(contentAlignment = Alignment.Center) {
                     AsyncImage(
@@ -290,9 +289,9 @@ fun MovieIcons(iconId: Int, s: String) {
 
 @Composable
 fun LeftElementsOfPoster(movieInfo: MovieInfo) {
-    Column() {
+    Column {
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Row() {
+            Row {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.time_icon),
                     contentDescription = "time icon",
@@ -386,7 +385,7 @@ fun MoviePoster(imageWidth: Int, movieInfo: MovieInfo) {
     Card(
         modifier = Modifier
             .width(imageWidth.dp)
-            .height((imageWidth * 1.8).dp)
+            .height((imageWidth * 1.6).dp)
             .clip(RoundedCornerShape(4.dp))
 
     ) {
@@ -471,7 +470,7 @@ fun ProductRow(
     LazyRow(contentPadding = PaddingValues(start = 10.dp)) {
         items(6) { i ->
 
-            Column() {
+            Column {
                 Card(
                     onClick = { onMovieClicked(moviesList.Search[i].imdbID) },
                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),

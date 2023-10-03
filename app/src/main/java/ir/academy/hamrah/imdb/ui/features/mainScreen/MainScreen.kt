@@ -34,7 +34,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,7 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import dev.burnoo.cokoin.navigation.getNavController
 import dev.burnoo.cokoin.navigation.getNavViewModel
@@ -68,7 +66,7 @@ fun MainScreen() {
     val context = LocalContext.current
     val viewModel = getNavViewModel<MainScreenViewModel>()
     val navController = getNavController()
-    var focusStateOfSearch by remember { mutableStateOf(false) }
+    val focusStateOfSearch by remember { mutableStateOf(false) }
 
     val input = remember { mutableStateOf("") }
 
@@ -77,7 +75,7 @@ fun MainScreen() {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val cardWidth = screenWidth / 3 - 30
-    viewModel.getMoviesList()
+    viewModel.getMoviesList("Batman")
 
     if (viewModel.moviesList.value.isMovieListEmpty()) {
         //todo
