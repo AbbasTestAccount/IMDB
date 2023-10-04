@@ -228,7 +228,7 @@ fun MainScreen() {
                             .fillMaxWidth()
                             .padding(vertical = 5.dp),
                         value = input.value,
-                        onValueChange = { onValueChanged(it, input, viewModel.searchTerm) },
+                        onValueChange = { onValueChanged(it, input, viewModel.searchTerm, viewModel.pageNumber) },
                         placeholder = {
                             Text(
                                 text = if (focusStateOfSearch) "" else "جستجو کنید"
@@ -307,12 +307,15 @@ fun pageSelectColor(i: Int, intValue: Int): Color {
 private fun onValueChanged(
     searchingWord: String,
     input: MutableState<String>,
-    searchTerm: MutableState<String>
+    searchTerm: MutableState<String>,
+    pageNumber: MutableState<Int>
 ) {
     input.value = searchingWord
     if (input.value.length > 2) {
+        pageNumber.value = 1
         searchTerm.value = input.value
     } else if (input.value.isEmpty()) {
+        pageNumber.value = 1
         searchTerm.value = "Batman"
     }
 }
